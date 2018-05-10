@@ -12,16 +12,20 @@ public class CameraBehaviour : MonoBehaviour {
     private int _height;
 
     private static readonly string CameraColliderTag = "CameraCollider";
+    private static readonly string CameraColliderTagLeft = "CameraColliderLeft";
+    private static readonly string CameraColliderTagRight = "CameraColliderRight";
+    private static readonly string CameraColliderTagTop = "CameraColliderTop";
+    private static readonly string CameraColliderTagBottom = "CameraColliderBottom";
 
     // Camera dynamic boundaries
     private bool _hasLeftBoundary = false;
     private bool _hasRightBoundary = false;
     private bool _hasTopBoundary = false;
     private bool _hasBottomBoundary = false;
-    private float _leftBoundary = 0.0f;
-    private float _rightBoundary = 0.0f;
-    private float _topBoundary = 0.0f;
-    private float _bottomBoundary = 0.0f;
+    private float _leftBoundary = float.MinValue;
+    private float _rightBoundary = float.MaxValue;
+    private float _topBoundary = float.MaxValue;
+    private float _bottomBoundary = float.MinValue;
 
     public PlayerMovement player;
 
@@ -88,7 +92,6 @@ public class CameraBehaviour : MonoBehaviour {
     {
         Width = Screen.width;
         Height = Screen.height;
-        //SmoothFollow();
         BasicFollow();
     }
 
@@ -107,82 +110,12 @@ public class CameraBehaviour : MonoBehaviour {
             playerPos.y + crouchOffset * offsetY,
             camPos.z);
 
-        if (_hasLeftBoundary)
-        {
-            newPosition.x = Mathf.Clamp(newPosition.x, _leftBoundary, float.MaxValue);
-        } 
-        if (_hasRightBoundary)
-        {
-            newPosition.x = Mathf.Clamp(newPosition.x, float.MinValue, _rightBoundary);
-        }
-        if (_hasTopBoundary)
-        {
-            newPosition.y = Mathf.Clamp(newPosition.y, float.MinValue, _topBoundary);
-        }
-        if (_hasBottomBoundary)
-        {
-            newPosition.y = Mathf.Clamp(newPosition.y, _bottomBoundary, float.MaxValue);
-        }
+        // Clamp camera position if colliding
+        newPosition.x = Mathf.Clamp(newPosition.x, _leftBoundary, _rightBoundary);
+        newPosition.y = Mathf.Clamp(newPosition.y, _bottomBoundary, _topBoundary);
 
         Vector3 velocity = Vector3.zero;
         _camera.transform.position = Vector3.SmoothDamp(camPos, newPosition, ref velocity, 0.1f);
-    }
-
-    private void SmoothFollow()
-    {
-        Vector3 posInCamera = _camera.WorldToScreenPoint(player.transform.position);
-
-        // Debug only
-        if (displayPosInCamera)
-        {
-            Debug.Log("Pos: " + posInCamera);
-        }
-        if (displayCameraSize)
-        {
-            Debug.Log("Camera: " + Width + "x" + Height);
-        }
-        
-        // Distance to trigger the camera animation
-        float offsetX = Width*0.3f;
-        float offSetY = Height*0.3f;
-
-        // Offset to have more space above the player than below
-        float floorOffset = 2f;
-
-        Vector3 camPos = _camera.transform.position;
-        Vector3 destination = camPos;
-        if (posInCamera.y + offSetY >= Height || posInCamera.y - offSetY <= 0)
-        {
-            float direction = posInCamera.y > Height / 2.0f ? 1.0f : -1.0f;
-            destination.y = player.transform.position.y + floorOffset + 2.0f/3.0f * Height * direction;
-        }
-        if (posInCamera.x + offsetX >= Width || posInCamera.x - offsetX <= 0)
-        {
-            float direction = posInCamera.x > Width / 2.0f ? 1.0f : -1.0f;
-            destination.x = player.transform.position.x + 2.0f/3.0f * Width * direction ;
-        }
-        Vector3 velocity = Vector3.zero;
-        _camera.transform.position = Vector3.SmoothDamp(camPos, destination, ref velocity, GetSmoothTime(posInCamera));
-    }
-
-    private float GetSmoothTime(Vector3 posInCamera)
-    {
-        float defaultSmoothTime = 1.0f;
-        //float fastSmoothTime = 0.01f;
-        //float velocityThreshold = 20.0f;
-
-        /*Debug.Log("velocity:" + player.GetComponent<Rigidbody2D>().velocity.y);
-
-        if (posInCamera.y >= Height || posInCamera.y <= 0)
-        {
-            return fastSmoothTime;
-        }*/
-
-        /*if (Mathf.Abs(player.GetComponent<Rigidbody2D>().velocity.y) >= velocityThreshold)
-        {
-            return fastSmoothTime;
-        }*/
-        return defaultSmoothTime;
     }
 
     /// <summary>
@@ -226,47 +159,50 @@ public class CameraBehaviour : MonoBehaviour {
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag(CameraColliderTag))
+        Vector3 collisionPoint = collision.bounds.ClosestPoint(transform.position);
+        if (collision.CompareTag(CameraColliderTagLeft))
         {
-            Debug.Log("Found a camera wall");
-            Vector3 collisionPoint = collision.bounds.ClosestPoint(transform.position);
-            if (collision.transform.position.x < transform.position.x)
-            {
-                _hasLeftBoundary = true;
-                _leftBoundary = collisionPoint.x;
-            }
-            else if (collision.transform.position.x >= transform.position.x)
-            {
-                _hasRightBoundary = true;
-                _rightBoundary = collisionPoint.x;
-            }
-
-            if (collision.transform.position.y < transform.position.y)
-            {
-                _hasBottomBoundary = true;
-                _bottomBoundary = collisionPoint.y;
-            }
-            else if (collision.transform.position.y >= transform.position.y)
-            {
-                _hasTopBoundary = true;
-                _topBoundary = collisionPoint.y;
-            }
+            _hasLeftBoundary = true;
+            _leftBoundary = collisionPoint.x;
+        }
+        if (collision.CompareTag(CameraColliderTagRight))
+        {
+            _hasRightBoundary = true;
+            _rightBoundary = collisionPoint.x;
+        }
+        if (collision.CompareTag(CameraColliderTagTop))
+        {
+            _hasTopBoundary = true;
+            _topBoundary = collisionPoint.y;
+        }
+        if (collision.CompareTag(CameraColliderTagBottom))
+        {
+            _hasBottomBoundary = true;
+            _bottomBoundary = collisionPoint.y;
         }
     }
 
     public void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag(CameraColliderTag))
+        if (collision.CompareTag(CameraColliderTagLeft))
         {
-            Debug.Log("Exiting camera wall");
-            if (collision.transform.position.x < transform.position.x)
-            {
-                _hasLeftBoundary = false;
-            }
-            else if (collision.transform.position.x >= transform.position.x)
-            {
-                _hasRightBoundary = false;
-            }
+            _hasLeftBoundary = false;
+            _leftBoundary = float.MinValue;
+        }
+        if (collision.CompareTag(CameraColliderTagRight))
+        {
+            _hasRightBoundary = false;
+            _rightBoundary = float.MaxValue;
+        }
+        if (collision.CompareTag(CameraColliderTagTop))
+        {
+            _hasTopBoundary = false;
+            _topBoundary = float.MaxValue;
+        }
+        if (collision.CompareTag(CameraColliderTagBottom))
+        {
+            _hasBottomBoundary = false;
+            _bottomBoundary = float.MinValue;
         }
     }
 }

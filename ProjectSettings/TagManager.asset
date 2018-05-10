@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - CameraCollider
+  - CameraColliderLeft
+  - CameraColliderRight
+  - CameraColliderTop
+  - CameraColliderBottom
   layers:
   - Default
   - TransparentFX
