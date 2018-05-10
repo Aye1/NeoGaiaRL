@@ -66,9 +66,9 @@ public class PlayerMovement : MonoBehaviour {
         }
 
 
-       // Vector3 pos = transform.position;
-       // float moveX = dirX * speed;
-       // transform.position = new Vector3(pos.x + moveX, pos.y, pos.z);
+        Vector3 pos = transform.position;
+        float moveX = dirX * speed;
+        transform.position = new Vector3(pos.x + moveX, pos.y, pos.z);
     }
 
     private void ManageJump()
