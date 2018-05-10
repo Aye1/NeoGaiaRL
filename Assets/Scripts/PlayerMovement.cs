@@ -5,10 +5,12 @@ public class PlayerMovement : MonoBehaviour {
 
     public float speed = 0.25f;
     public float jumpForce = 750.0f;
-    //public bool grounded = true;
+    public float speedInAir = 0.25f;
+    public bool grounded = true;
     public int maxJumpsAvailable = 1;
     public int jumpsAvailable = 1;
-    public float maxVelocity = 18.0f;
+    public float maxVelocityX = 18.0f;
+    public float maxVelocityY = 18.0f;
     public float lastDirectionX = 0.0f;
     public bool crouching = false;
 
@@ -40,11 +42,31 @@ public class PlayerMovement : MonoBehaviour {
     {
         if (_player.canMove)
         {
-            ManageMove();
-            ManageCrouch();
+            //ManageMove();
+            ManageMoveWithForces();
+            //ManageCrouch();
             ManageJump();
-            ManageInteraction();
+            //ManageInteraction();
             LimitVelocity();
+        }
+    }
+
+
+    private void ManageMoveWithForces()
+    {
+        float actualSpeed = grounded ? speed : speedInAir; 
+        float dirX = 0.0f;
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            _body.velocity = new Vector2(actualSpeed, _body.velocity.y);
+        }
+        else if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            _body.velocity = new Vector2(-actualSpeed, _body.velocity.y);
+        }
+        else
+        {
+            _body.velocity = new Vector2(0.0f, _body.velocity.y);
         }
     }
 
@@ -56,15 +78,12 @@ public class PlayerMovement : MonoBehaviour {
         {
             dirX = 1.0f;
             lastDirectionX = dirX;
-            //rb2d.velocity = new Vector2(speed, rb2d.velocity.y);
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
             dirX = -1.0f;
             lastDirectionX = dirX;
-            //rb2d.velocity = new Vector2(-speed, rb2d.velocity.y);
         }
-
 
         Vector3 pos = transform.position;
         float moveX = dirX * speed;
@@ -76,8 +95,8 @@ public class PlayerMovement : MonoBehaviour {
         // Manage jump
         if (Input.GetKeyDown(KeyCode.Space) && jumpsAvailable > 0)
         {
-            _body.AddForce(new Vector2(0.0f, jumpForce));
-            //grounded = false;
+            _body.AddForce(new Vector2(0.0f, jumpForce), ForceMode2D.Impulse);
+            grounded = false;
             jumpsAvailable--;
         }
     }
@@ -110,7 +129,7 @@ public class PlayerMovement : MonoBehaviour {
     public void OnCollisionEnter2D(Collision2D col)
     {
         Debug.Log("Collision");
-        //grounded = true;
+        grounded = true;
         jumpsAvailable = maxJumpsAvailable;
     }
 
@@ -135,10 +154,15 @@ public class PlayerMovement : MonoBehaviour {
 
     public void LimitVelocity()
     {
-        if(Mathf.Abs(_body.velocity.y) > maxVelocity)
+        if(Mathf.Abs(_body.velocity.y) > maxVelocityY)
         {
             float sign = Mathf.Abs(_body.velocity.y) / _body.velocity.y;
-            _body.velocity = new Vector2(_body.velocity.x, sign * maxVelocity) ;
+            _body.velocity = new Vector2(_body.velocity.x, sign * maxVelocityY) ;
+        }
+        if (Mathf.Abs(_body.velocity.x) > maxVelocityX)
+        {
+            float sign = Mathf.Abs(_body.velocity.x) / _body.velocity.x;
+            _body.velocity = new Vector2( sign * maxVelocityX, _body.velocity.y);
         }
     }
 }
