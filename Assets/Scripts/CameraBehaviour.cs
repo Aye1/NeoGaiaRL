@@ -80,6 +80,9 @@ public class CameraBehaviour : MonoBehaviour {
         BasicFollow();
     }
 
+    // Follow the player
+    // Offset left/right depending of the player last movement
+    // Offset down if the player is crouched
     private void BasicFollow()
     {
         float offsetX = 5.0f;
@@ -94,7 +97,6 @@ public class CameraBehaviour : MonoBehaviour {
 
         Vector3 velocity = Vector3.zero;
         _camera.transform.position = Vector3.SmoothDamp(camPos, newPosition, ref velocity, 0.1f);
-        //_camera.transform.position = newPosition;
     }
 
     private void SmoothFollow()
@@ -193,8 +195,14 @@ public class CameraBehaviour : MonoBehaviour {
         }
     }
 
-    public void OnColliderEnter2D(Collider2D collider)
+    public void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("Camera colliding");
+        Debug.Log("Camera colliding: " + collision.collider.name);
+
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log("Camera triggering: " + collision.name);
     }
 }
