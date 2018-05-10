@@ -7,7 +7,8 @@ public class PlayerMovement : MonoBehaviour {
     public float jumpForce = 750.0f;
     public float speedInAir = 0.25f;
     public bool grounded = true;
-    public int maxJumpsAvailable = 1;
+    public int initialMaxJumpsAvailable = 1;
+    private int maxJumpsAvailable = 1;
     public int jumpsAvailable = 1;
     public float maxVelocityX = 18.0f;
     public float maxVelocityY = 18.0f;
@@ -35,7 +36,7 @@ public class PlayerMovement : MonoBehaviour {
 
     private void UpdateJumpsAvailable()
     {
-        maxJumpsAvailable = _player.has10Jumps ? 10 : 1;
+        maxJumpsAvailable = _player.has10Jumps ? 10 : initialMaxJumpsAvailable;
     }
 
     private void ManageInputs()
@@ -93,8 +94,10 @@ public class PlayerMovement : MonoBehaviour {
     private void ManageJump()
     {
         // Manage jump
+        
         if (Input.GetKeyDown(KeyCode.Space) && jumpsAvailable > 0)
         {
+            _body.velocity = new Vector2(_body.velocity.x, 0.0f);
             _body.AddForce(new Vector2(0.0f, jumpForce), ForceMode2D.Impulse);
             grounded = false;
             jumpsAvailable--;
@@ -154,15 +157,20 @@ public class PlayerMovement : MonoBehaviour {
 
     public void LimitVelocity()
     {
+        float velocityX = _body.velocity.x;
+        float velocityY = _body.velocity.y;
+
         if(Mathf.Abs(_body.velocity.y) > maxVelocityY)
         {
             float sign = Mathf.Abs(_body.velocity.y) / _body.velocity.y;
-            _body.velocity = new Vector2(_body.velocity.x, sign * maxVelocityY) ;
+            velocityY = sign * maxVelocityY;
         }
         if (Mathf.Abs(_body.velocity.x) > maxVelocityX)
         {
             float sign = Mathf.Abs(_body.velocity.x) / _body.velocity.x;
-            _body.velocity = new Vector2( sign * maxVelocityX, _body.velocity.y);
+            velocityX = sign * maxVelocityX;
         }
+        _body.velocity = new Vector2(velocityX, velocityY);
+
     }
 }
