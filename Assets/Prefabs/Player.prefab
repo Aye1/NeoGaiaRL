@@ -119,8 +119,8 @@ MonoBehaviour:
   jumpForce: 1000
   speedInAir: 5
   grounded: 0
-  maxJumpsAvailable: 1
-  jumpsAvailable: 1
+  initialMaxJumpsAvailable: 3
+  jumpsAvailable: 3
   maxVelocityX: 18
   maxVelocityY: 15
   lastDirectionX: 0
