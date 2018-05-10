@@ -11,6 +11,18 @@ public class CameraBehaviour : MonoBehaviour {
     private int _width;
     private int _height;
 
+    private static readonly string CameraColliderTag = "CameraCollider";
+
+    // Camera dynamic boundaries
+    private bool _hasLeftBoundary = false;
+    private bool _hasRightBoundary = false;
+    private bool _hasTopBoundary = false;
+    private bool _hasBottomBoundary = false;
+    private float _leftBoundary = 0.0f;
+    private float _rightBoundary = 0.0f;
+    private float _topBoundary = 0.0f;
+    private float _bottomBoundary = 0.0f;
+
     public PlayerMovement player;
 
     [Header("Debug settings")]
@@ -94,6 +106,23 @@ public class CameraBehaviour : MonoBehaviour {
         Vector3 newPosition = new Vector3(playerPos.x + player.lastDirectionX * offsetX, 
             playerPos.y + crouchOffset * offsetY,
             camPos.z);
+
+        if (_hasLeftBoundary)
+        {
+            newPosition.x = Mathf.Clamp(newPosition.x, _leftBoundary, float.MaxValue);
+        } 
+        if (_hasRightBoundary)
+        {
+            newPosition.x = Mathf.Clamp(newPosition.x, float.MinValue, _rightBoundary);
+        }
+        if (_hasTopBoundary)
+        {
+            newPosition.y = Mathf.Clamp(newPosition.y, float.MinValue, _topBoundary);
+        }
+        if (_hasBottomBoundary)
+        {
+            newPosition.y = Mathf.Clamp(newPosition.y, _bottomBoundary, float.MaxValue);
+        }
 
         Vector3 velocity = Vector3.zero;
         _camera.transform.position = Vector3.SmoothDamp(camPos, newPosition, ref velocity, 0.1f);
@@ -195,14 +224,49 @@ public class CameraBehaviour : MonoBehaviour {
         }
     }
 
-    public void OnCollisionEnter2D(Collision2D collision)
-    {
-        Debug.Log("Camera colliding: " + collision.collider.name);
-
-    }
-
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Camera triggering: " + collision.name);
+        if(collision.CompareTag(CameraColliderTag))
+        {
+            Debug.Log("Found a camera wall");
+            Vector3 collisionPoint = collision.bounds.ClosestPoint(transform.position);
+            if (collision.transform.position.x < transform.position.x)
+            {
+                _hasLeftBoundary = true;
+                _leftBoundary = collisionPoint.x;
+            }
+            else if (collision.transform.position.x >= transform.position.x)
+            {
+                _hasRightBoundary = true;
+                _rightBoundary = collisionPoint.x;
+            }
+
+            if (collision.transform.position.y < transform.position.y)
+            {
+                _hasBottomBoundary = true;
+                _bottomBoundary = collisionPoint.y;
+            }
+            else if (collision.transform.position.y >= transform.position.y)
+            {
+                _hasTopBoundary = true;
+                _topBoundary = collisionPoint.y;
+            }
+        }
+    }
+
+    public void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag(CameraColliderTag))
+        {
+            Debug.Log("Exiting camera wall");
+            if (collision.transform.position.x < transform.position.x)
+            {
+                _hasLeftBoundary = false;
+            }
+            else if (collision.transform.position.x >= transform.position.x)
+            {
+                _hasRightBoundary = false;
+            }
+        }
     }
 }
