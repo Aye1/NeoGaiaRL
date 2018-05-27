@@ -5,6 +5,7 @@
 /[Bb]uilds/
 /Assets/AssetStoreTools*
 /Assets/Images/PSD*
+/Assets/Images/Thumbs*
 
 # Visual Studio 2015 cache directory
 /.vs/

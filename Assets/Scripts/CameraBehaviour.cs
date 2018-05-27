@@ -84,7 +84,7 @@ public class CameraBehaviour : MonoBehaviour {
         _camera = GetComponent<Camera>();
         DontDestroyOnLoad(_camera);
         ObjectChecker.CheckNullity(player, "Camera can't find the Player");
-
+        GoToPlayer();
     }
 
     // Update is called once per frame
@@ -93,6 +93,14 @@ public class CameraBehaviour : MonoBehaviour {
         Width = Screen.width;
         Height = Screen.height;
         BasicFollow();
+    }
+
+    // Instantly goes to the player position
+    private void GoToPlayer()
+    {
+        _camera.transform.position = new Vector3(player.transform.position.x
+            , player.transform.position.y
+            , _camera.transform.position.z);
     }
 
     // Follow the player
