@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.Helpers
 {
     public static class SpriteHelper
     {
-        public static IEnumerator FateToAlpha(SpriteRenderer rend, float alpha)
+        public static IEnumerator FadeToAlpha(SpriteRenderer rend, float alpha)
         {
             float baseAlpha = rend.color.a;
             if (baseAlpha != alpha)

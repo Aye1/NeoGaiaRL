@@ -215,8 +215,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 104226323}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1573857661}
@@ -258,7 +258,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: dd3fd8050f5dd6747b6dc061e14e50d3, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1471,8 +1471,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1573857661}
-  - component: {fileID: 1573857663}
   - component: {fileID: 1573857662}
+  - component: {fileID: 1573857663}
   m_Layer: 0
   m_Name: Hole
   m_TagString: Untagged
@@ -1508,8 +1508,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inside: {fileID: 104226325}
   outside: {fileID: 1459455594}
---- !u!58 &1573857663
-CircleCollider2D:
+--- !u!68 &1573857663
+EdgeCollider2D:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -1520,9 +1520,18 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.35408583, y: -1.2654946}
-  serializedVersion: 2
-  m_Radius: 0.4167609
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.7723334, y: -1.4251175}
+  - {x: -0.6259017, y: -0.86034584}
+  - {x: 0.22108555, y: -0.8545122}
+  - {x: 1.9897441, y: -1.0427041}
+  - {x: 2.598866, y: -1.2447345}
+  - {x: 2.608878, y: -2.038308}
+  - {x: 1.855715, y: -2.0109715}
+  - {x: -0.14800644, y: -1.5635779}
+  - {x: -0.7977638, y: -1.4563334}
 --- !u!1 &1634681799
 GameObject:
   m_ObjectHideFlags: 0
