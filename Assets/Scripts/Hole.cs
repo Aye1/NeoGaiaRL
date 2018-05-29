@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class Hole : MonoBehaviour {
 
-    public SpriteRenderer inside;
-    public SpriteRenderer outside;
-
+    public SpriteRenderer cover;
     private Player player;
     private Bounds colBounds;
     private bool _isInside = false;
@@ -18,10 +16,14 @@ public class Hole : MonoBehaviour {
             if (value != _isInside)
             {
                 _isInside = !IsInside;
-                float targetAlpha = IsInside ? 1.0f : 0.0f;
+                float targetAlpha = IsInside ? 0.0f : 1.0f;
                 // We don't want multiple alpha fades at the same time
                 StopAllCoroutines();
-                StartCoroutine(SpriteHelper.FadeToAlpha(inside, targetAlpha));
+                StartCoroutine(SpriteHelper.FadeToAlpha(cover, targetAlpha));
+                /*foreach(SpriteRenderer rendChild in inside.gameObject.GetComponentsInChildren<SpriteRenderer>())
+                {
+                    StartCoroutine(SpriteHelper.FadeToAlpha(rendChild, targetAlpha));
+                }*/
             }
         }
         get
