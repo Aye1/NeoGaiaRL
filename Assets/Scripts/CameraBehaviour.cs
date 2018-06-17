@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using Assets.Scripts.Helpers;
 
 public class CameraBehaviour : MonoBehaviour {
@@ -28,6 +29,9 @@ public class CameraBehaviour : MonoBehaviour {
     private float _bottomBoundary = float.MinValue;
 
     public PlayerMovement player;
+    public bool isCinematicMode = false;
+    public Vector3 targetPosition;
+    public float smoothTime;
 
     [Header("Debug settings")]
     public bool displayPosInCamera = false;
@@ -92,7 +96,10 @@ public class CameraBehaviour : MonoBehaviour {
     {
         Width = Screen.width;
         Height = Screen.height;
-        BasicFollow();
+        if (!isCinematicMode)
+        {
+            BasicFollow();
+        }
     }
 
     // Instantly goes to the player position
@@ -101,6 +108,29 @@ public class CameraBehaviour : MonoBehaviour {
         _camera.transform.position = new Vector3(player.transform.position.x
             , player.transform.position.y
             , _camera.transform.position.z);
+    }
+
+    public void GoToPosition(Vector3 pos)
+    {
+        GoToPosition(pos, 1);
+    }
+
+    public void GoToPosition(Vector3 pos, float time)
+    {
+        Debug.Log("Going to " + pos.ToString());
+        StartCoroutine(SmoothMoveToPosition(pos, time));
+    }
+
+    public IEnumerator SmoothMoveToPosition(Vector3 pos, float time)
+    {
+        Vector3 currentPos = transform.position;
+        float t = 0.0f;
+        while (t<1)
+        {
+            t += Time.deltaTime / time;
+            transform.position = Vector3.Lerp(currentPos, pos, t);
+            yield return null;
+        }
     }
 
     // Follow the player

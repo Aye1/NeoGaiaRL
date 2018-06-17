@@ -72,6 +72,10 @@ public class PlayerMovement : MonoBehaviour
             //ManageInteraction();
             LimitVelocity();
             ChangeGravity();
+        } else
+        {
+            _body.velocity = Vector3.zero;
+            _body.gravityScale = gravityDown;
         }
     }
 
