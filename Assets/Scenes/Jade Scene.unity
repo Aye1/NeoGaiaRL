@@ -157,6 +157,56 @@ Prefab:
       propertyPath: m_Constraints
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 50159136570627390, guid: 8238bc6f6d8a9b0478f784d0a74c63d3,
+        type: 2}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 50159136570627390, guid: 8238bc6f6d8a9b0478f784d0a74c63d3,
+        type: 2}
+      propertyPath: m_GravityScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 50159136570627390, guid: 8238bc6f6d8a9b0478f784d0a74c63d3,
+        type: 2}
+      propertyPath: m_UseAutoMass
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214555911338354, guid: 8238bc6f6d8a9b0478f784d0a74c63d3,
+        type: 2}
+      propertyPath: jumpForce
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214555911338354, guid: 8238bc6f6d8a9b0478f784d0a74c63d3,
+        type: 2}
+      propertyPath: initialMaxJumpsAvailable
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214555911338354, guid: 8238bc6f6d8a9b0478f784d0a74c63d3,
+        type: 2}
+      propertyPath: jumpsAvailable
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214555911338354, guid: 8238bc6f6d8a9b0478f784d0a74c63d3,
+        type: 2}
+      propertyPath: maxSpeed.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214555911338354, guid: 8238bc6f6d8a9b0478f784d0a74c63d3,
+        type: 2}
+      propertyPath: maxSpeedInAir.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214555911338354, guid: 8238bc6f6d8a9b0478f784d0a74c63d3,
+        type: 2}
+      propertyPath: maxSpeedInAir.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214555911338354, guid: 8238bc6f6d8a9b0478f784d0a74c63d3,
+        type: 2}
+      propertyPath: speedForce
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8238bc6f6d8a9b0478f784d0a74c63d3, type: 2}
   m_IsPrefabParent: 0

@@ -55,15 +55,15 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 100
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 2
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &61026283132199032
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -115,16 +115,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95f44141eb7c4e343a0237abdfd6ca8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
-  jumpForce: 1000
-  speedInAir: 5
-  grounded: 0
-  initialMaxJumpsAvailable: 3
-  jumpsAvailable: 3
-  maxVelocityX: 18
-  maxVelocityY: 15
-  lastDirectionX: 0
-  crouching: 0
+  speedForce: 10
+  maxSpeed: {x: 10, y: 0}
+  maxSpeedInAir: {x: 7, y: 20}
+  jumpForce: 10
+  initialMaxJumpsAvailable: 2
+  gravityUp: 2
+  gravityDown: 3
+  threshold: 0.5
 --- !u!212 &212288932007598032
 SpriteRenderer:
   m_ObjectHideFlags: 1

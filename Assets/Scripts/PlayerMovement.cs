@@ -1,27 +1,48 @@
 ﻿using Assets.Scripts.Helpers;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour {
+public class PlayerMovement : MonoBehaviour
+{
 
-    public float speed = 0.25f;
+    [Header("Movement")]
+    public float speedForce = 5.0f;
+    public Vector2 maxSpeed = new Vector2(1.0f, 0.0f);
+    public Vector2 maxSpeedInAir = new Vector2(1.0f, 5.0f);
+    //private
+    private bool isCrouching = false;
+    private bool isGrounded = true;
+    [HideInInspector] private float lastDirectionX = 0.0f;
+
+    [Header("Jump")]
     public float jumpForce = 750.0f;
-    public float speedInAir = 0.25f;
-    public bool grounded = true;
     public int initialMaxJumpsAvailable = 1;
+    public float gravityUp = 1.0f;
+    public float gravityDown = 2.5f;
+    public float threshold = 0.5f;
+    //private
     private int maxJumpsAvailable = 1;
-    public int jumpsAvailable = 1;
-    public float maxVelocityX = 18.0f;
-    public float maxVelocityY = 18.0f;
-    public float lastDirectionX = 0.0f;
-    public bool crouching = false;
+    private int jumpsAvailable = 1;
+    private bool isJumping = false;
+
 
     private IInteractable _currentInteractable = null;
 
     private Rigidbody2D _body;
     private Player _player;
 
-	// Use this for initialization
-	void Start () {
+    //Getter and Setter
+    public bool IsCrouching()
+    {
+        return isCrouching;
+    }
+    public float GetLatestDirectionX()
+    {
+        return lastDirectionX;
+    }
+
+    // Use this for initialization
+    void Start()
+    {
         _body = GetComponent<Rigidbody2D>();
         _player = GetComponent<Player>();
         ObjectChecker.CheckNullity(_body, "RigidBody2D not found for Player");
@@ -29,10 +50,11 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         ManageInputs();
         UpdateJumpsAvailable();
-	}
+    }
 
     private void UpdateJumpsAvailable()
     {
@@ -49,58 +71,77 @@ public class PlayerMovement : MonoBehaviour {
             ManageJump();
             //ManageInteraction();
             LimitVelocity();
+            ChangeGravity();
         }
     }
 
-
     private void ManageMoveWithForces()
     {
-        float actualSpeed = grounded ? speed : speedInAir; 
         float dirX = 0.0f;
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            _body.velocity = new Vector2(actualSpeed, _body.velocity.y);
+            //_body.velocity = new Vector2(actualSpeed, _body.velocity.y);
+            _body.AddForce(new Vector2(speedForce, 0.0f), ForceMode2D.Impulse);
+            dirX = 1.0f;
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
-            _body.velocity = new Vector2(-actualSpeed, _body.velocity.y);
+            //_body.velocity = new Vector2(-actualSpeed, _body.velocity.y);
+            _body.AddForce(new Vector2(-speedForce, 0.0f), ForceMode2D.Impulse);
+            dirX = -1.0f;
         }
         else
         {
             _body.velocity = new Vector2(0.0f, _body.velocity.y);
         }
+        //lastDirectionX = dirX;
     }
 
-    private void ManageMove()
-    {
-        // Manage Left/Right
-        float dirX = 0.0f;
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            dirX = 1.0f;
-            lastDirectionX = dirX;
-        }
-        else if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            dirX = -1.0f;
-            lastDirectionX = dirX;
-        }
-
-        Vector3 pos = transform.position;
-        float moveX = dirX * speed;
-        transform.position = new Vector3(pos.x + moveX, pos.y, pos.z);
-    }
-
+    
     private void ManageJump()
     {
-        // Manage jump
-        
         if (Input.GetKeyDown(KeyCode.Space) && jumpsAvailable > 0)
         {
             _body.velocity = new Vector2(_body.velocity.x, 0.0f);
             _body.AddForce(new Vector2(0.0f, jumpForce), ForceMode2D.Impulse);
-            grounded = false;
+            isGrounded = false;
             jumpsAvailable--;
+        }
+    }
+
+    public void LimitVelocity()
+    {
+        Vector2 actualMaxSpeed = isGrounded ? maxSpeed : maxSpeedInAir;
+        float velocityX = _body.velocity.x;
+        float velocityY = _body.velocity.y;
+
+        if (Mathf.Abs(_body.velocity.y) > actualMaxSpeed.y)
+        {
+            float sign = Mathf.Abs(_body.velocity.y) / _body.velocity.y;
+            velocityY = sign * actualMaxSpeed.y;
+        }
+        if (Mathf.Abs(_body.velocity.x) > actualMaxSpeed.x)
+        {
+            float sign = Mathf.Abs(_body.velocity.x) / _body.velocity.x;
+            velocityX = sign * actualMaxSpeed.x;
+        }
+        _body.velocity = new Vector2(velocityX, velocityY);
+
+    }
+
+    private void ChangeGravity()
+    {
+        if (_body.velocity.y > threshold)
+        {
+            _body.gravityScale = gravityUp;
+        }
+        else if (_body.velocity.y < threshold)
+        {
+            _body.gravityScale = gravityDown;
+        }
+        else
+        {
+            _body.gravityScale = 1.0f;
         }
     }
 
@@ -108,10 +149,11 @@ public class PlayerMovement : MonoBehaviour {
     {
         if (Input.GetKey(KeyCode.DownArrow))
         {
-            crouching = true;
-        } else
+            isCrouching = true;
+        }
+        else
         {
-            crouching = false;
+            isCrouching = false;
         }
     }
 
@@ -132,7 +174,7 @@ public class PlayerMovement : MonoBehaviour {
     public void OnCollisionEnter2D(Collision2D col)
     {
         Debug.Log("Collision");
-        grounded = true;
+        isGrounded = true;
         jumpsAvailable = maxJumpsAvailable;
     }
 
@@ -155,22 +197,4 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    public void LimitVelocity()
-    {
-        float velocityX = _body.velocity.x;
-        float velocityY = _body.velocity.y;
-
-        if(Mathf.Abs(_body.velocity.y) > maxVelocityY)
-        {
-            float sign = Mathf.Abs(_body.velocity.y) / _body.velocity.y;
-            velocityY = sign * maxVelocityY;
-        }
-        if (Mathf.Abs(_body.velocity.x) > maxVelocityX)
-        {
-            float sign = Mathf.Abs(_body.velocity.x) / _body.velocity.x;
-            velocityX = sign * maxVelocityX;
-        }
-        _body.velocity = new Vector2(velocityX, velocityY);
-
-    }
 }

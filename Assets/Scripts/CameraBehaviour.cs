@@ -112,9 +112,9 @@ public class CameraBehaviour : MonoBehaviour {
         float offsetY = 2.0f;
         Vector3 camPos = _camera.transform.position;
         Vector3 playerPos = player.transform.position;
-        float crouchOffset = player.crouching ? -1.0f : 0.0f;
+        float crouchOffset = player.IsCrouching() ? -1.0f : 0.0f;
 
-        Vector3 newPosition = new Vector3(playerPos.x + player.lastDirectionX * offsetX, 
+        Vector3 newPosition = new Vector3(playerPos.x + player.GetLatestDirectionX() * offsetX, 
             playerPos.y + crouchOffset * offsetY,
             camPos.z);
 
