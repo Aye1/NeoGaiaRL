@@ -2,7 +2,7 @@
 using System.Collections;
 using Assets.Scripts.Helpers;
 
-public class CameraBehaviour : MonoBehaviour {
+public class CameraBehaviour : MonoBehaviour, IMovable {
 
     public static readonly Vector3 minResolution = new Vector3(1024f, 576f, 0);
     private float targetRatio = 16f / 9f;
@@ -108,6 +108,11 @@ public class CameraBehaviour : MonoBehaviour {
         _camera.transform.position = new Vector3(player.transform.position.x
             , player.transform.position.y
             , _camera.transform.position.z);
+    }
+
+    public Vector3 GetPosition()
+    {
+        return transform.position;
     }
 
     public void GoToPosition(Vector3 pos)
