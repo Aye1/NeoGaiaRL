@@ -215,14 +215,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void StartGrinding()
+    public void StartGrinding(float height)
     {
         Debug.Log("Start grinding");
         Vector3 debugdir = new Vector3(1.0f, 0.0f, 0.0f);
         ChangeGrindingDirection(debugdir);
         isGrinding = true;
         _playerSprite.color = Color.green;
-        DisableYVelocity();
+        ForceGrindingHeight(height);
     }
 
     public void StopGrinding()
@@ -238,9 +238,10 @@ public class PlayerMovement : MonoBehaviour
         grindingDirection = dir;
     }
 
-    private void DisableYVelocity()
+    private void ForceGrindingHeight(float height)
     {
         _body.velocity = new Vector3(_body.velocity.x, 0.0f, 0.0f);
+        transform.position = new Vector3(transform.position.x, height, transform.position.z);
     }
 
     private void ManageGrindingMovement()

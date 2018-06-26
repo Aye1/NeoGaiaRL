@@ -9,6 +9,7 @@ TagManager:
   - CameraColliderRight
   - CameraColliderTop
   - CameraColliderBottom
+  - PlayerBottom
   layers:
   - Default
   - TransparentFX

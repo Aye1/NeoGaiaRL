@@ -6,6 +6,7 @@ public class Rail : MonoBehaviour {
 
     private int collisionCount = 0;
     private PlayerMovement _player;
+    public float referenceHeight;
 
 	// Use this for initialization
 	void Start () {
@@ -22,7 +23,7 @@ public class Rail : MonoBehaviour {
         collisionCount++;
         if (collisionCount == 1)
         {
-            _player.StartGrinding();
+            _player.StartGrinding(transform.position.y + 0.5f);
         }
     }
 
