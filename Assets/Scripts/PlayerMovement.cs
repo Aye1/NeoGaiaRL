@@ -23,12 +23,15 @@ public class PlayerMovement : MonoBehaviour
     private int maxJumpsAvailable = 1;
     private int jumpsAvailable = 1;
     private bool isJumping = false;
+    private bool isGrinding = false;
+    private Vector3 grindingDirection = Vector3.zero;
 
 
     private IInteractable _currentInteractable = null;
 
     private Rigidbody2D _body;
     private Player _player;
+    private SpriteRenderer _playerSprite;
 
     //Getter and Setter
     public bool IsCrouching()
@@ -45,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _body = GetComponent<Rigidbody2D>();
         _player = GetComponent<Player>();
+        _playerSprite = GetComponent<SpriteRenderer>();
         ObjectChecker.CheckNullity(_body, "RigidBody2D not found for Player");
         ObjectChecker.CheckNullity(_player, "Player not found");
     }
@@ -66,7 +70,13 @@ public class PlayerMovement : MonoBehaviour
         if (_player.canMove)
         {
             //ManageMove();
-            ManageMoveWithForces();
+            if (!isGrinding)
+            {
+                ManageMoveWithForces();
+            } else
+            {
+                ManageGrindingMovement();
+            }
             //ManageCrouch();
             ManageJump();
             //ManageInteraction();
@@ -135,7 +145,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void ChangeGravity()
     {
-        if (_body.velocity.y > threshold)
+        if (isGrinding)
+        {
+            _body.gravityScale = 0.0f;
+        }
+        else if (_body.velocity.y > threshold)
         {
             _body.gravityScale = gravityUp;
         }
@@ -199,6 +213,39 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("Can't interact anymore");
             _currentInteractable = null;
         }
+    }
+
+    public void StartGrinding()
+    {
+        Debug.Log("Start grinding");
+        Vector3 debugdir = new Vector3(1.0f, 0.0f, 0.0f);
+        ChangeGrindingDirection(debugdir);
+        isGrinding = true;
+        _playerSprite.color = Color.green;
+        DisableYVelocity();
+    }
+
+    public void StopGrinding()
+    {
+        Debug.Log("Stop grinding");
+        grindingDirection = Vector3.zero;
+        isGrinding = false;
+        _playerSprite.color = Color.white;
+    }
+
+    public void ChangeGrindingDirection(Vector3 dir)
+    {
+        grindingDirection = dir;
+    }
+
+    private void DisableYVelocity()
+    {
+        _body.velocity = new Vector3(_body.velocity.x, 0.0f, 0.0f);
+    }
+
+    private void ManageGrindingMovement()
+    {
+        _body.AddForce(grindingDirection, ForceMode2D.Impulse);
     }
 
 }
