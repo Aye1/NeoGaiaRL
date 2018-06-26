@@ -1048,15 +1048,17 @@ MonoBehaviour:
     time: 2
   - position: {x: 0, y: 0, z: 0}
     time: 5
-  - position: {x: -5, y: 0, z: 0}
+  - position: {x: -3, y: 0, z: 0}
     time: 1
   actors:
   - character: {fileID: 1507945387}
     moves:
     - position: {x: 0, y: 0, z: 0}
       time: 3
-    - position: {x: 10, y: 0, z: 0}
+    - position: {x: 8, y: 0, z: 0}
       time: 2
+    - position: {x: 2, y: 2, z: 0}
+      time: 1
 --- !u!61 &1096432439
 BoxCollider2D:
   m_ObjectHideFlags: 0

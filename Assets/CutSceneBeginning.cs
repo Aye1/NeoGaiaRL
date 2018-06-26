@@ -35,11 +35,6 @@ public class CutSceneBeginning : MonoBehaviour {
         _camera = FindObjectOfType<CameraBehaviour>();
 	}
 
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Player"))
@@ -71,11 +66,12 @@ public class CutSceneBeginning : MonoBehaviour {
 
     private IEnumerator MoveEntity(IMovable entity, List<Movement> moves)
     {
-        foreach(Movement move in moves )
+        foreach(Movement move in moves)
         {
             Vector3 newPos = entity.GetPosition() + move.position;
             entity.GoToPosition(newPos, move.time);
             yield return new WaitForSeconds(move.time);
         }
+        EndCutScene();
     }
 }
