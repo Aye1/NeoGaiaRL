@@ -20,7 +20,10 @@ public class RailPart : MonoBehaviour {
     {
         if (collision.CompareTag("PlayerBottom"))
         {
-            _fullRail.PlayerCollidesRailPart();
+            Vector3 playerVel = collision.attachedRigidbody.velocity;
+            float newX = playerVel.x == 0.0f ? 1.0f : playerVel.x;
+            playerVel = new Vector3(newX, 0.0f, 0.0f);
+            _fullRail.PlayerCollidesRailPart(playerVel);
         }
     }
 

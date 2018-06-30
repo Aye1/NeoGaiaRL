@@ -18,12 +18,13 @@ public class Rail : MonoBehaviour {
 		
 	}
 
-    public void PlayerCollidesRailPart()
+    public void PlayerCollidesRailPart(Vector3 playerVel)
     {
         collisionCount++;
         if (collisionCount == 1)
         {
             _player.StartGrinding(transform.position.y + 0.5f);
+            _player.ChangeGrindingDirection(playerVel.normalized);
         }
     }
 
