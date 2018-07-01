@@ -5,6 +5,7 @@ using UnityEngine;
 public class RailPart : MonoBehaviour {
 
     private Rail _fullRail;
+    public Vector3 direction;
 
 	// Use this for initialization
 	void Start () {
@@ -21,9 +22,9 @@ public class RailPart : MonoBehaviour {
         if (collision.CompareTag("PlayerBottom"))
         {
             Vector3 playerVel = collision.attachedRigidbody.velocity;
-            float newX = playerVel.x == 0.0f ? 1.0f : playerVel.x;
-            playerVel = new Vector3(newX, 0.0f, 0.0f);
-            _fullRail.PlayerCollidesRailPart(playerVel);
+            float sign = playerVel.x >= 0.0f ? 1.0f : -1.0f;
+            Vector3 newDir = sign * direction.normalized;
+            _fullRail.PlayerCollidesRailPart(newDir);
         }
     }
 

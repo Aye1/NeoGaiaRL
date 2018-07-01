@@ -236,6 +236,15 @@ public class PlayerMovement : MonoBehaviour
     public void ChangeGrindingDirection(Vector3 dir)
     {
         grindingDirection = dir;
+        CancelVerticalSpeedIfNeeded();
+    }
+
+    private void CancelVerticalSpeedIfNeeded()
+    {
+        if (grindingDirection.y == 0.0f)
+        {
+            _body.velocity = new Vector3(_body.velocity.x, 0.0f, 0.0f);
+        }
     }
 
     private void ForceGrindingHeight(float height)
